@@ -1,0 +1,46 @@
+
+<br>
+<script type ="text/javascript">
+
+    window.onload = function() {
+        what();
+        function what(){
+            document.getElementById('Result').innerHTML = 'hi';
+            document.getElementById('Soluc').innerHTML = 'hi';
+        };
+    }
+</script>
+
+
+<div>
+    {{inicio()}}
+    {{verificar()}}
+    <a class="font">Ventana De Problema De Mochila</a>
+    <br>
+    <br>
+    <a class="font">Tamaño de la mochila: </a> <input id="spinCantidad" type="number" min="0" max="30" step="1" value="10" size="10" class="css-input">
+    <dl aling="center">
+        <dt class="font">Nombre del objeto: <input type="text" id="nObjeto" class="css-input"><br></dt>
+        <dt class="font">Peso del objeto: <input type="number" id="pObjeto" class="css-input" value="0"></dt>
+        <dt class="font">Valor del objeto: <input type="number" id="vObjeto" class="css-input" value="0"></dt>
+        <dt class="font">Cantidad del objeto: <input type="number" id="cObjeto" class="css-input" value="0"></dt>
+        <dt class="font"><button (click)="setValores()" class="myButton">Agregar</button></dt>
+        <br>
+        <dt class="font"><a>Cargar Archivo:</a><input type="file" id="file-selector" (change)="cargar()" class="css-input"></dt>
+    </dl>
+    <br>
+    <dl>
+        <a class="font">Objetos Agregados</a>
+        <li *ngFor="let objetos of listaObjetos">
+            {{objetos}}
+        </li>
+    </dl>
+    <br>
+    <button (click)="mochila()" class="myButton">Usar algoritmo</button>
+    <button (click)="limpiar()" class="myButton">Limpiar</button>
+    <br><br>
+    <div id="Result" ></div>
+    <div id="Soluc"></div>
+    <pre id="output"></pre>
+
+</div>

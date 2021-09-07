@@ -1,0 +1,37 @@
+<br>
+<script type ="text/javascript">
+
+    window.onload = function() {
+        what();
+        function what(){
+            document.getElementById('Result').innerHTML = 'hi';
+            document.getElementById('Soluc').innerHTML = 'hi';
+        };
+    }
+</script>
+
+<div>
+    {{inicio()}}
+    {{verificar()}}
+    <a class="font">Ventana Rutas Mas Cortas</a>
+    <dl aling="center">
+        
+        <br>
+        <dt class="font"><a>Cargar Archivo:</a><input type="file" id="file-selector" (change)="cargar()" class="css-input"></dt>
+    </dl>
+    <br>
+    <dl>
+        <li *ngFor="let objetos of listaObjetos">
+            {{objetos}}
+        </li>
+    </dl>
+    <br>
+    <button (click)="mochila()" class="myButton">Cargar Tabla D(0)</button>
+    <button (click)="limpiar()" class="myButton">Limpiar</button>
+    <br><br>
+    <div id="Result" ></div>
+    <div id="Soluc"></div>
+    <pre id="output"></pre>
+
+</div>
+

@@ -14,13 +14,22 @@
     outline:none;
 }
 
+table {
+    width: 100%;
+}
+
+.tableInput {
+    text-align: center;
+}
+
+
 .font {
     font-family: Georgia, serif;
     font-size: 20px;
     letter-spacing: 2px;
     word-spacing: 2px;
-    color: #000000;
-    font-weight: 400;
+    color: #fafafa;
+    font-weight: bold;
     text-decoration: none;
     font-style: normal;
     font-variant: normal;
@@ -51,4 +60,18 @@
 .myButton:active {
 	position:relative;
 	top:1px;
+}
+
+.contador {
+    height: 20px;
+    width: 40px;
+}
+
+.tagP {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+th {
+    text-align: left;
 }

@@ -11,15 +11,36 @@
 </script>
 
 <div>
-    {{inicio()}}
-    {{verificar()}}
-    <a class="font">Ventana Rutas Mas Cortas</a>
-    <dl aling="center">
-        
-        <br>
-        <dt class="font"><a>Cargar Archivo:</a><input type="file" id="file-selector" (change)="cargar()" class="css-input"></dt>
-    </dl>
-    <br>
+    <!-- {{inicio()}}
+    {{verificar()}} -->
+    <div style="display: flex;">
+        <div style="width: 50%; ; text-align: center;">
+            <a class="font">Ventana Rutas Mas Cortas</a>
+        </div>
+        <div style="flex-grow: 1;">
+            <a class="font">Cargar Archivo:</a><input type="file" id="file-selector" (change)="cargar()" class="css-input">
+        </div>
+    </div>
+    <br><br><br>
+    <a class="tagP">Número de nodos: </a><input id="contador" class="contador" type="number" min="1" max="10" value="1" >
+    <br><br>
+    <a class="tagP">Nombre de nodos:  </a><input type="text" id="nombreNodos"><a class="tagP">  (Ejemplo: "Alfa,Beta,Omega...")</a>
+    <br><br>
+    <button (click)="crearTablaInput()"  class="myButton">Generar</button>
+    <br><br><br>
+    <div id="input">
+        <table id="tablaInput">
+            <tbody id="cuerpo">
+                <tr id="encabezados">
+                    
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <button *ngIf="generado" (click)="getValues()" class="myButton">Guardar Tabla</button>
+    </div>
+    <br><br><br>
+    <br><br><br>
     <dl>
         <li *ngFor="let objetos of listaObjetos">
             {{objetos}}

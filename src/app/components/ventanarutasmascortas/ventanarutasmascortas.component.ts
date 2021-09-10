@@ -16,7 +16,7 @@ export class VentanarutasmascortasComponent implements OnInit {
 tamMochila = 0;
 cantObjetos = 0;
 listaObjetos = [];
-listaNodos = [];
+
 listaPesosRutas = [];
 listaPesos = [];
 listaValores = [];
@@ -27,46 +27,131 @@ cond = true;
 tabla = [];
 color = [];
 tamañoTablaGlobal=0;
+////////////////////////////
+generado=false;
+listaNodos = [];
+matrizPesos:number[][]=[];
+////////////////////////////
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+
+
+*/
+
+
+public crearTablaInput(){
+  var contenido= +(<HTMLInputElement>document.getElementById("contador")).value;
+  if (0<contenido && contenido<11) {
+    document.getElementById("cuerpo").innerHTML=``;
+    var nombres:string=(<HTMLInputElement>document.getElementById("nombreNodos")).value;
+    this.generado=true;
+    var cuerpo = ``;
+    var nombrenodos:string[];
+    if (nombres) {
+      var listaNombre = (nombres.trim()).split(',');
+      if(listaNombre.length>0 && listaNombre.length==contenido){
+        nombrenodos=listaNombre;
+      }else{
+        alert("La cantidad de nombres no coincide con el número de nodos.");
+        nombrenodos=["A","B","C","D","E","F","g","h","I","J"];
+      }
+    }else{
+      nombrenodos=["A","B","C","D","E","F","g","h","I","J"];
+    }
+    this.listaNodos=nombrenodos;
+    for (var i=0;i<contenido;i++){
+      this.matrizPesos[i]=[];
+    }
+    var nuevoContenido="<tr><th>tabla D(0)</th>";
+    for (let i = 0; i < contenido; i++) {
+      nuevoContenido+= `<th style="text-align: left";>${nombrenodos[i]}</th>`;
+    }
+    nuevoContenido+=`</tr>`;
+
+    for (let i = 0; i < contenido; i++) {
+      cuerpo+=`<tr><th>${nombrenodos[i]}</th>`
+      for (let j = 0; j < contenido; j++) {
+        if(i==j){
+          cuerpo+=`<td><input size="10" type="text" value="0"></td>`;
+        }else{
+          cuerpo+=`<td><input size="10" type="text" value="-1"></td>`;
+        }
+        
+      }
+      cuerpo+=`</tr>`;
+    }
+
+    nuevoContenido+=cuerpo;
+
+    document.getElementById("cuerpo").innerHTML+= nuevoContenido;
+    
+  }
+}
+
+public getValues(){
+  var table = <HTMLTableElement>(document.getElementById("tablaInput"));
+   for(var i= 1; i < table.rows.length; i++){
+      var columnas = table.rows.item(i).cells;
+
+      for(var j = 1; j < columnas.length; j++){
+        var valor = parseInt((<HTMLInputElement>columnas.item(j).children[0]).value);
+        if (valor == -1){
+          this.matrizPesos[i-1][j-1]= Infinity;
+        }else{
+          this.matrizPesos[i-1][j-1]= valor;
+        }
+        
+      }
+   }
+   console.log(this.matrizPesos);
+}
+
+
+/*
+//////////////////////////////////////////////////////////////////////////////////////
+*/
 public mochila() {
   if(this.listaObjetos.length != 0){
     this.cantObjetos = this.listaObjetos.length;
-  this.listaResultado = Array(this.cantObjetos).fill(0);
-  this.tabla = Array(this.cantObjetos+1).fill(null).map(() => Array(this.tamMochila+1).fill(0));
-  this.color = Array(this.cantObjetos+1).fill(null).map(() => Array(this.tamMochila+1).fill(0));
-	for(var i = 1; i <= this.cantObjetos; i ++){
-    	for(var j = 1; j <= this.tamMochila; j++){
-        this.tabla[i][j] = this.tabla[i-1][j];
-        if(this.listaCantidad[i-1] == 1){
-          for(var k = 1; k <= this.listaCantidad[i-1]; k++){
-            if(k * this.listaPesos[i-1] > j) {
-                    break;
-               }
-              var v = this.tabla[i-1][j - k * this.listaPesos[i-1]] + k * this.listaValores[i-1];
-              if(v > this.tabla[i][j]){
-              this.color[i][j] = 1;
-              this.tabla[i][j] = v;
-              }
-          }
-        }else{
-        	for(var k = 1; k < this.listaCantidad[i-1]; k++){
-            	if(k * this.listaPesos[i-1] > j) {
-                    	break;
-                 }
+    this.listaResultado = Array(this.cantObjetos).fill(0);
+    this.tabla = Array(this.cantObjetos+1).fill(null).map(() => Array(this.tamMochila+1).fill(0));
+    this.color = Array(this.cantObjetos+1).fill(null).map(() => Array(this.tamMochila+1).fill(0));
+    for(var i = 1; i <= this.cantObjetos; i ++){
+        for(var j = 1; j <= this.tamMochila; j++){
+          this.tabla[i][j] = this.tabla[i-1][j];
+          if(this.listaCantidad[i-1] == 1){
+            for(var k = 1; k <= this.listaCantidad[i-1]; k++){
+              if(k * this.listaPesos[i-1] > j) {
+                      break;
+                }
                 var v = this.tabla[i-1][j - k * this.listaPesos[i-1]] + k * this.listaValores[i-1];
                 if(v > this.tabla[i][j]){
-					      this.color[i][j] = 1;
+                this.color[i][j] = 1;
                 this.tabla[i][j] = v;
                 }
             }
+          }else{
+            for(var k = 1; k < this.listaCantidad[i-1]; k++){
+                if(k * this.listaPesos[i-1] > j) {
+                        break;
+                  }
+                  var v = this.tabla[i-1][j - k * this.listaPesos[i-1]] + k * this.listaValores[i-1];
+                  if(v > this.tabla[i][j]){
+                  this.color[i][j] = 1;
+                  this.tabla[i][j] = v;
+                  }
+              }
+            }
           }
-        }
-    }
-    for(var i=0; i<=this.tamMochila; i++){
-      this.tabla[0][i] = i;
-      this.color[0][i] = 2;
-    }
-    this.resultado();
+      }
+      for(var i=0; i<=this.tamMochila; i++){
+        this.tabla[0][i] = i;
+        this.color[0][i] = 2;
+      }
+      this.resultado();
   }else{
     alert("No tiene datos agregados");
   }
@@ -182,7 +267,12 @@ public solucion(){
     }
   }
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+/*
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+*/ 
 public cargar(){
   document.getElementById("output").style.display = "none";
   document.getElementById('file-selector').addEventListener('change', function() { 
@@ -216,7 +306,7 @@ public leer(){
     
     }
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+////
 
 public verificar(){
   if(document.getElementById('output').textContent != ""){

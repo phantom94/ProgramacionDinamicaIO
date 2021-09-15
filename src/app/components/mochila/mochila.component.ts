@@ -76,10 +76,7 @@ public setValores(){
   var pObjeto = parseInt((<HTMLInputElement>document.getElementById("pObjeto")).value);
   var vObjeto = parseInt((<HTMLInputElement>document.getElementById("vObjeto")).value);
   var cObjeto = parseInt((<HTMLInputElement>document.getElementById("cObjeto")).value);
-  // var nObjeto = (document.getElementById(nObjeto) as HTMLInputElement).value;
-  // var pObjeto = +(document.getElementById(pObjeto) as HTMLInputElement).value;
-  // var vObjeto = +(document.getElementById(vObjeto) as HTMLInputElement).value;
-  // var cObjeto = +(document.getElementById(cObjeto) as HTMLInputElement).value;
+
   if(nObjeto == "" || pObjeto == 0 || vObjeto == 0 || cObjeto == 0){
     alert("Espacios vacíos");
   }else{

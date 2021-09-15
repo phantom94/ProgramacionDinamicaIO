@@ -13,35 +13,38 @@ export class VentanarutasmascortasComponent implements OnInit {
   ngOnInit(): void {
   }
 
-tamMochila = 0;
-cantObjetos = 0;
-listaObjetos = [];
 
-listaPesosRutas = [];
-listaPesos = [];
-listaValores = [];
-listaCantidad = [];
-listaResultado = [];
-res = 0;
-cond = true;
-tabla = [];
-color = [];
-tamañoTablaGlobal=0;
-////////////////////////////
+
 generado=false;
+iniciado=false;
+terminado=false;
+numNodos=0;
+tablaActual=0;
+contenidoArchivo="";
 listaNodos = [];
 matrizPesos:number[][]=[];
-////////////////////////////
+matrizRutas:any[][]=[];
+cambios:[number,number,number][]=[]
 
+// Reinicia los valores de todas las variables globales.
+public limpiar(){
+  this.generado=false;
+  this.iniciado=false;
+  this.terminado=false;
+  this.numNodos=0;
+  this.tablaActual=0;
+  this.contenidoArchivo="";
+  this.listaNodos=[];
+  this.matrizPesos=[];
+  this.matrizRutas=[];
+  this.cambios=[];
+  document.getElementById("cuerpo").innerHTML=``;
+  document.getElementById("cuerpoRutas").innerHTML= ``;
+  (<HTMLInputElement>document.getElementById("file-selector")).value='';
+}
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*
-
-
-*/
-
-
+//Crea la tabla inicial para que el usuario ingrese
+// los datos de la tabla D(0)
 public crearTablaInput(){
   var contenido= +(<HTMLInputElement>document.getElementById("contador")).value;
   if (0<contenido && contenido<11) {
@@ -50,6 +53,7 @@ public crearTablaInput(){
     this.generado=true;
     var cuerpo = ``;
     var nombrenodos:string[];
+    this.numNodos=contenido;
     if (nombres) {
       var listaNombre = (nombres.trim()).split(',');
       if(listaNombre.length>0 && listaNombre.length==contenido){
@@ -59,15 +63,16 @@ public crearTablaInput(){
         nombrenodos=["A","B","C","D","E","F","g","h","I","J"];
       }
     }else{
-      nombrenodos=["A","B","C","D","E","F","g","h","I","J"];
+      nombrenodos=["A","B","C","D","E","F","G","H","I","J"];
     }
     this.listaNodos=nombrenodos;
     for (var i=0;i<contenido;i++){
       this.matrizPesos[i]=[];
+      this.matrizRutas.push([]);
     }
     var nuevoContenido="<tr><th>tabla D(0)</th>";
     for (let i = 0; i < contenido; i++) {
-      nuevoContenido+= `<th style="text-align: left";>${nombrenodos[i]}</th>`;
+      nuevoContenido+= `<th style="text-align: left;">${nombrenodos[i]}</th>`;
     }
     nuevoContenido+=`</tr>`;
 
@@ -91,6 +96,19 @@ public crearTablaInput(){
   }
 }
 
+// inicia el calculo de las rutas más cortas con los datos
+// que fueron especificados por el usuario.
+public iniciar(){
+
+  this.getValues();
+
+  document.getElementById("cuerpo").innerHTML=``;
+  this.iniciado=true;
+  this.dibujarTablaDi();
+  this.dibujarTablaP();
+}
+
+// Obtiene los valores de la tabla input del usuario
 public getValues(){
   var table = <HTMLTableElement>(document.getElementById("tablaInput"));
    for(var i= 1; i < table.rows.length; i++){
@@ -103,265 +121,220 @@ public getValues(){
         }else{
           this.matrizPesos[i-1][j-1]= valor;
         }
+        this.matrizRutas[i-1][j-1]=0;
         
       }
    }
-   console.log(this.matrizPesos);
+   
 }
 
-
-/*
-//////////////////////////////////////////////////////////////////////////////////////
-*/
-public mochila() {
-  if(this.listaObjetos.length != 0){
-    this.cantObjetos = this.listaObjetos.length;
-    this.listaResultado = Array(this.cantObjetos).fill(0);
-    this.tabla = Array(this.cantObjetos+1).fill(null).map(() => Array(this.tamMochila+1).fill(0));
-    this.color = Array(this.cantObjetos+1).fill(null).map(() => Array(this.tamMochila+1).fill(0));
-    for(var i = 1; i <= this.cantObjetos; i ++){
-        for(var j = 1; j <= this.tamMochila; j++){
-          this.tabla[i][j] = this.tabla[i-1][j];
-          if(this.listaCantidad[i-1] == 1){
-            for(var k = 1; k <= this.listaCantidad[i-1]; k++){
-              if(k * this.listaPesos[i-1] > j) {
-                      break;
-                }
-                var v = this.tabla[i-1][j - k * this.listaPesos[i-1]] + k * this.listaValores[i-1];
-                if(v > this.tabla[i][j]){
-                this.color[i][j] = 1;
-                this.tabla[i][j] = v;
-                }
-            }
-          }else{
-            for(var k = 1; k < this.listaCantidad[i-1]; k++){
-                if(k * this.listaPesos[i-1] > j) {
-                        break;
-                  }
-                  var v = this.tabla[i-1][j - k * this.listaPesos[i-1]] + k * this.listaValores[i-1];
-                  if(v > this.tabla[i][j]){
-                  this.color[i][j] = 1;
-                  this.tabla[i][j] = v;
-                  }
-              }
-            }
-          }
-      }
-      for(var i=0; i<=this.tamMochila; i++){
-        this.tabla[0][i] = i;
-        this.color[0][i] = 2;
-      }
-      this.resultado();
-  }else{
-    alert("No tiene datos agregados");
+// Genera la nueva tabla D(k)
+public generarTablaDi(){
+  this.cambios=[];
+  this.crearTablaDi();
+  this.actualizarP();
+  this.tablaActual++;
+  this.dibujarTablaDi();
+  this.dibujarTablaP();
+  if(this.tablaActual==this.numNodos){
+    this.terminado=true;
   }
 }
 
-
-public setValores(){
-  var nObjeto = (<HTMLInputElement>document.getElementById("nObjeto")).value;
-  var pObjeto = parseInt((<HTMLInputElement>document.getElementById("pObjeto")).value);
-  var vObjeto = parseInt((<HTMLInputElement>document.getElementById("vObjeto")).value);
-  var cObjeto = parseInt((<HTMLInputElement>document.getElementById("cObjeto")).value);
-  if(nObjeto == "" || pObjeto == 0 || vObjeto == 0 || cObjeto == 0){
-    alert("Espacios vacíos");
-  }else{
-    this.listaObjetos.push(nObjeto);
-    this.listaPesos.push(pObjeto);
-    this.listaValores.push(vObjeto);
-    this.listaCantidad.push(cObjeto);
-    this.tamMochila = +(document.getElementById("spinCantidad") as HTMLInputElement).value;
-    (document.getElementById("nObjeto")as HTMLInputElement).value = "";
-    (document.getElementById("pObjeto")as HTMLInputElement).value = (0).toString();
-    (document.getElementById("vObjeto")as HTMLInputElement).value = (0).toString();
-    (document.getElementById("cObjeto")as HTMLInputElement).value = (0).toString();
-  }
-  
-}
-
-public resultado(){
-  this.tamMochila = parseInt((<HTMLInputElement>document.getElementById("spinCantidad")).value);
-  if(this.tamMochila != 0){
-    var e = "<table border='1' style='width:100%'>";   
-    e += "<tr><th> Capacidad </th>";
-    for (var i=0; i<this.listaObjetos.length; i++){
-      e += "<th bgcolor='gray'> " + this.listaObjetos[i] + "</th>";
+// Dibuja en la interfaz la nueva tabla D(k)
+public dibujarTablaDi(){
+  var nuevoContenido=`<tr><th>Tabla D(${this.tablaActual})</th>`;
+    for (let i = 1; i <= this.numNodos; i++) {
+      nuevoContenido+= `<th style="width: 150px;text-align: center;">${this.listaNodos[i-1]}</th>`;
     }
-    e += "<tr>";
-    for (var j=0; j<=this.tamMochila; j++){
-      e += "<tr>";
-      for (var i=0; i<=this.listaObjetos.length; i++){
-        if(this.color[i][j] == 1){
-          e += "<th bgcolor='green'>" + this.tabla[i][j] + "</th>";
-        }else if(this.color[i][j] == 0){
-          e += "<th bgcolor='red'> " + this.tabla[i][j] + "</th>";
+    nuevoContenido+=`</tr>`;
+
+    for (let i = 1; i < this.numNodos+1; i++) {
+      nuevoContenido+=`<tr><th ">${this.listaNodos[i-1]}</th>`
+      for (let j = 0; j < this.numNodos; j++) {
+        var color=``;
+        if(this.existe(this.cambios,i-1,j)){
+          color=`color: black;font-weight: bolder;`;
+        }
+        var valor = this.matrizPesos[i-1][j]
+        if(valor==Infinity){
+          nuevoContenido+=`<td style="text-align: center;border:1px solid #fafafa;"><a style="${color}">${-1}</a></td>`; 
         }else{
-          e += "<th bgcolor='white'> " + this.tabla[i][j] + "</th>";
+          nuevoContenido+=`<td style="text-align: center;border:1px solid #fafafa;"><a style="${color}">${valor}</a></td>`; 
         }
       }
-      e += "<tr>"
+      nuevoContenido+=`</tr>`;
     }
-    e += "</table>";
-    document.getElementById("Result").innerHTML = e;
+    document.getElementById("cuerpo").innerHTML= nuevoContenido;
+}
 
-    this.solucion();
+// Dibuja en la interfaz la nueva iteración de la tabla P(k)
+public dibujarTablaP(){
+  var nuevoContenido=`<tr><th>Tabla P(${this.tablaActual})</th>`;
+    for (let i = 1; i <= this.numNodos; i++) {
+      nuevoContenido+= `<th style="width: 150px;text-align: center;">${this.listaNodos[i-1]}</th>`;
+    }
+    nuevoContenido+=`</tr>`;
 
-    e = "";
-    var e2 = "";
-    var e3 = "";
-    e += "<h1> Solución </h1><br><dl><a>Maximizar:</a><br><li>Z = ";
-    e2 += "<dl><a>Sujeto a:</a><br><li>";
-    e3 += "<a>Solución Óptima</a><br><dl><li>Z = " + this.res + "</li></dl>";
-    for(var i=0;i<this.listaObjetos.length;i++){
-      if(i == this.listaObjetos.length-1){
-        e += this.listaValores[i] + "X" + (i+1);
-        e2 += this.listaPesos[i] + "X" + (i+1) + " <= " + this.tamMochila;
-      }else{
-        e += this.listaValores[i] + "X" + (i+1) + " + ";
-        e2 += this.listaPesos[i] + "X" + (i+1) + " + ";
+    for (let i = 1; i < this.numNodos+1; i++) {
+      nuevoContenido+=`<tr><th>${this.listaNodos[i-1]}</th>`
+      for (let j = 0; j < this.numNodos; j++) {
+        var valor = this.matrizRutas[i-1][j]
+        if(valor==Infinity){
+          nuevoContenido+=`<td style="text-align: center;border:1px solid #fafafa;"><a>${0}</a></td>`; 
+        }else{
+          nuevoContenido+=`<td style="text-align: center;border:1px solid #fafafa;"><a>${valor}</a></td>`; 
+        }
       }
-      e3 += "<dl><li>X" + (i+1) + " = " + this.listaResultado[i] + "</li></dl>";
+      nuevoContenido+=`</tr>`;
     }
-    e += "</li></dl>";
-    e2 += "</li><li>Xi >= 0</li></dl>";
-    e += e2 + e3;
-    document.getElementById("Soluc").innerHTML = e;
-  }else{
-    alert("No tiene datos agregados");
-  }
+    document.getElementById("cuerpoRutas").innerHTML= nuevoContenido;
+}
+
+
+// Actualiza la tabla P(k) con los nuevos cambios generados por
+// D(k)
+public actualizarP(){
   
+  this.cambios.forEach(element => {
+    
+    this.matrizRutas[element[0]][element[1]]=element[2];
+    
+  });
+
 }
 
-public solucion(){
-  if(this.listaCantidad[0] != 1){
-    for(var j=this.tamMochila; j>=0; j--){
-      var max=0;
-      var posicion=0;
-      for(var i=1; i<=this.cantObjetos; i++){
-        if(max < this.tabla[i][j] && this.color[i][j] == 1){
-          max = this.tabla[i][j];
-          posicion = i;
-        }
+// Genera la nueva tabla D(k)
+public crearTablaDi(){
+  var nuevaMatriz:number[][]=[]
+  this.cambios=[]
+  for(var i=0; i<this.numNodos; i++){
+    nuevaMatriz.push([]);
+    for (let j = 0; j < this.numNodos; j++) {
+      var min= Math.min(this.matrizPesos[i][j],(this.matrizPesos[i][this.tablaActual]+this.matrizPesos[this.tablaActual][j]))
+      if(this.matrizPesos[i][j]!==min){
+        this.cambios.push([i,j,this.tablaActual+1]);
       }
-      if(j == this.tamMochila){
-        this.res = max;
-      }
-      this.listaResultado[posicion-1] = this.listaResultado[posicion-1] + 1;
-      j = j-this.listaPesos[posicion-1]+1
-    }
-  }else{
-    for(var j=this.tamMochila; j>=0; j--){
-      var max=0;
-      var posicion=0;
-      for(var i=1; i<=this.cantObjetos; i++){
-        if(max < this.tabla[i][j] && this.color[i][j] == 1 && this.listaResultado[i-1] == 0){
-          max = this.tabla[i][j];
-          posicion = i;
-        }
-      }
-      if(j == this.tamMochila){
-        this.res = max;
-      }
-      this.listaResultado[posicion-1] = this.listaResultado[posicion-1] + 1;
-      j = j-this.listaPesos[posicion-1]+1
+      nuevaMatriz[i][j]= min;
     }
   }
+  this.matrizPesos=nuevaMatriz;
 }
 
-
-
-/*
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-*/ 
-public cargar(){
-  document.getElementById("output").style.display = "none";
-  document.getElementById('file-selector').addEventListener('change', function() { 
+// Lee el archivo especificado por el usuario
+// para completar la tabla de entrada del usuario
+public lectorArchivos(event:Event){
 			
-			var fr=new FileReader(); 
-			fr.onload=function(){
-        document.getElementById('output').textContent = fr.result as string;
-      }
-      fr.readAsText((<HTMLInputElement>this).files[0]);
-    });
-    this.leer();
+  var file = (<HTMLInputElement>event.target).files[0];
+
+  var reader = new FileReader();
+
+  reader.onload= () => {
+    this.contenidoArchivo = reader.result as string;
+  }
+
+  reader.readAsText(file);
+
 }
 
-public leer(){
-  this.limpiar2();
-  var texto = document.getElementById('output').textContent;
-  var listaTexto = texto.split(/\s+/g);
-   if(this.listaNodos.length==0 && this.listaPesosRutas.length==0){
-     console.log(listaTexto[0]); 
-     var tamañotabla=parseInt(listaTexto[0])+1;
-     console.log(tamañotabla); 
-    for(var i=1;i<tamañotabla;i++){
-      console.log(listaTexto[i]); 
-      this.listaNodos.push(listaTexto[i]);//lista de los nodos de la tabla
+// Genera un archivo que guarda la representación de la 
+// tabla creada por el usuario
+public guardarTabla(){
+  this.getValues();
+  var contenido:string=((this.listaNodos.splice(0,this.numNodos)).join(" ")).concat("\n");
+  for(var i=0;i<this.numNodos;i++){
+
+    var valores=[];
+    for(var j=0;j<this.numNodos;j++){
+
+      valores.push(`${(this.matrizPesos[i][j])===Infinity ? -1 : this.matrizPesos[i][j]}`);
+
     }
-    console.log(this.listaNodos);
-    for(var x=tamañotabla;x<listaTexto.length;x++){
-      console.log(listaTexto[x]);
-      this.listaPesosRutas.push(listaTexto[x]);//tabla de los pesos de las rutas 
+
+    contenido+=(valores.join(" ")).concat("\n");
+  }
+  this.matrizPesos=[];
+  this.matrizRutas=[];
+  var elemento = document.createElement('a');
+  elemento.setAttribute('href',`data:text/plain;charset=utf-8,${contenido}`);
+  elemento.setAttribute('download', "Tabla D0");
+
+  elemento.dispatchEvent(new MouseEvent("click"));
+}
+
+// Crea una tabla de entrada con los datos de un archivo subido por el usuario
+public cargarArchivo(){
+  document.getElementById("cuerpo").innerHTML= ``;
+  var lineas = this.contenidoArchivo.split("\n");
+  this.listaNodos=lineas[0].split(" ");
+  this.numNodos=this.listaNodos.length;
+  var contenidoMatriz=lineas.slice(1);
+  this.matrizPesos=[];
+  var cuerpo="";
+  var nuevoContenido="<tr><th>tabla D(0)</th>";
+    for (let i = 0; i < this.numNodos; i++) {
+      nuevoContenido+= `<th style="text-align: left;">${this.listaNodos[i]}</th>`;
+      this.matrizPesos.push([]);
+      this.matrizRutas.push([]);
+    }
+    nuevoContenido+=`</tr>`;
+
+    for (let i = 0; i < this.numNodos; i++) {
+      cuerpo+=`<tr><th>${this.listaNodos[i]}</th>`;
+      var valores=contenidoMatriz[i].split(" ");
+      for (let j = 0; j < this.numNodos; j++) {
+
+        cuerpo+=`<td><input size="10" type="text" value="${valores[j]}"></td>`;
+        
+      }
+      cuerpo+=`</tr>`;
+    }
+
+    nuevoContenido+=cuerpo;
+
+    document.getElementById("cuerpo").innerHTML+= nuevoContenido;
+
+    this.generado=true;
+}
+
+// Calcula la ruta entre dos nodos especificados
+// por el usuario
+public calcularRuta(){
+  var inicio=this.listaNodos.indexOf((<HTMLInputElement>document.getElementById("origen")).value);
+  var destino=this.listaNodos.indexOf((<HTMLInputElement>document.getElementById("destino")).value);
+  var array=[];
+  document.getElementById("res").innerHTML=this.getRuta(array,inicio,destino,0).join(" --> ");
+
+}
+
+// Permite obtener todas las rutas entre dos nodos
+private getRuta(array:number[],x:number,y:number,z:number): number[]{
+  if(this.matrizRutas[x][y]==0){
+    if(z==0){
+      array.push(this.listaNodos[x]);
+      array.push(this.listaNodos[y]); 
+    }else{
+      if(z==1){
+        array.push(this.listaNodos[x]);
+      }
+      
+    }
+    return array;
+  }else{
+    var nuevoArray=this.getRuta(array,x,(this.matrizRutas[x][y])-1,1);
+    return this.getRuta(nuevoArray,(this.matrizRutas[x][y])-1,y,0);
+  }
+
+}
+
+private existe(array:number[][],x:number,y:number){
+  for (let i = 0; i < array.length; i++) {
+    if(array[i][0]===x && array[i][1]===y){
+      return true;
     }
     
-    }
-}
-////
-
-public verificar(){
-  if(document.getElementById('output').textContent != ""){
-    this.leer();
   }
+  return false;
 }
-
-public inicio(){
-  if(this.cond){
-    this.cargar();
-    this.cond = false;
-  }
-}
-
-public limpiar(){
-  this.cantObjetos = 0;
-  this.res = 0;
-  this.listaObjetos = [];
-  this.listaPesos = [];
-  this.listaValores = [];
-  this.listaCantidad = [];
-  this.listaResultado = [];
-  this.tabla = [];
-  this.color = [];
-  this.tamMochila = 0;
-  this.listaNodos = [];
-  this.listaPesosRutas = [];
-  this.cond = true;
-  this.tabla = [];
-  this.color = [];
-  this.tamañoTablaGlobal=0;
-  document.getElementById("Result").innerHTML = "";
-  document.getElementById("Soluc").innerHTML = "";
-  (document.getElementById('file-selector')as HTMLInputElement).value = "";
-  document.getElementById('output').textContent = "";
-}
-
-public limpiar2(){
-  this.cantObjetos = 0;
-  this.res = 0;
-  this.listaObjetos = [];
-  this.listaPesos = [];
-  this.listaValores = [];
-  this.listaCantidad = [];
-  this.listaResultado = [];
-  this.tabla = [];
-  this.color = [];
-  this.tamMochila = 0;
-  this.listaNodos = [];
-  this.listaPesosRutas = [];
-  this.cond = true;
-  this.tabla = [];
-  this.color = [];
-  this.tamañoTablaGlobal=0;
-}
-
 
 }

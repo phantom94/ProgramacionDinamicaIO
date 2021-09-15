@@ -14,14 +14,11 @@
     outline:none;
 }
 
-table {
-    width: 100%;
-}
 
-.tableInput {
-    text-align: center;
+.centro {
+    width: auto;
+    margin: auto;
 }
-
 
 .font {
     font-family: Georgia, serif;
@@ -50,6 +47,7 @@ table {
 	font-size:15px;
 	font-weight:bold;
 	padding:6px 24px;
+    margin: 25px 12px 0px 12px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
 }
@@ -72,6 +70,14 @@ table {
     font-weight: bold;
 }
 
-th {
-    text-align: left;
+table {
+    color: #fafafa;
+}
+
+td {
+    border:1px solid #fafafa;
+}
+
+.rutasLabel {
+    font-weight: bolder;font-size: larger;color: #fafafa;
 }

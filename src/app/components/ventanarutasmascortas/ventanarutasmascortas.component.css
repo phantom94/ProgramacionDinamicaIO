@@ -14,13 +14,19 @@
     outline:none;
 }
 
+
+.centro {
+    width: auto;
+    margin: auto;
+}
+
 .font {
     font-family: Georgia, serif;
     font-size: 20px;
     letter-spacing: 2px;
     word-spacing: 2px;
-    color: #000000;
-    font-weight: 400;
+    color: #fafafa;
+    font-weight: bold;
     text-decoration: none;
     font-style: normal;
     font-variant: normal;
@@ -41,6 +47,7 @@
 	font-size:15px;
 	font-weight:bold;
 	padding:6px 24px;
+    margin: 25px 12px 0px 12px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
 }
@@ -51,4 +58,26 @@
 .myButton:active {
 	position:relative;
 	top:1px;
+}
+
+.contador {
+    height: 20px;
+    width: 40px;
+}
+
+.tagP {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+table {
+    color: #fafafa;
+}
+
+td {
+    border:1px solid #fafafa;
+}
+
+.rutasLabel {
+    font-weight: bolder;font-size: larger;color: #fafafa;
 }

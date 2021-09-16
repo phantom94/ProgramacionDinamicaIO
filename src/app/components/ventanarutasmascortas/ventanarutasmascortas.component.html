@@ -1,37 +1,49 @@
 <br>
-<script type ="text/javascript">
-
-    window.onload = function() {
-        what();
-        function what(){
-            document.getElementById('Result').innerHTML = 'hi';
-            document.getElementById('Soluc').innerHTML = 'hi';
-        };
-    }
-</script>
 
 <div>
-    {{inicio()}}
-    {{verificar()}}
-    <a class="font">Ventana Rutas Mas Cortas</a>
-    <dl aling="center">
-        
+    <div style="display: flex;">
+        <div style="width: 50%; ; text-align: center;">
+            <a class="font">Ventana Rutas Mas Cortas</a>
+        </div>
+        <div style="flex-grow: 1;">
+            <a class="font">Cargar Archivo:</a><input type="file" id="file-selector" class="css-input" (change)="lectorArchivos($event)" accept=".txt">
+        </div>
+    </div>
+    <br><br><br>
+    <div *ngIf="!iniciado">
+        <a class="tagP">Número de nodos: </a><input id="contador" class="contador" type="number" min="1" max="10" value="1" >
+        <br><br>
+        <a class="tagP">Nombre de nodos:  </a><input type="text" id="nombreNodos"><a class="tagP">  (Ejemplo: "Alfa,Beta,Omega...")</a>
+        <br><br>
+    </div>
+    
+    <button *ngIf="!iniciado" (click)="crearTablaInput()"  class="myButton">Generar</button>
+    <button *ngIf="(contenidoArchivo !== '') && !iniciado" (click)="cargarArchivo()"  class="myButton">Generar desde archivo</button>
+    <button *ngIf="iniciado || terminado" (click)="limpiar()" class="myButton">Limpiar</button>
+    <button *ngIf="iniciado && !terminado" (click)="generarTablaDi()" class="myButton">Generar tabla D({{tablaActual+1}})</button>
+    <br><br><br>
+    <div *ngIf="terminado">
+        <input id="origen" type="text"><a class="rutasLabel"> --> </a><input id="destino" type="text">
+        <a class="rutasLabel"> = </a><a id="res" class="rutasLabel"></a>
         <br>
-        <dt class="font"><a>Cargar Archivo:</a><input type="file" id="file-selector" (change)="cargar()" class="css-input"></dt>
-    </dl>
-    <br>
-    <dl>
-        <li *ngFor="let objetos of listaObjetos">
-            {{objetos}}
-        </li>
-    </dl>
-    <br>
-    <button (click)="mochila()" class="myButton">Cargar Tabla D(0)</button>
-    <button (click)="limpiar()" class="myButton">Limpiar</button>
+        <button (click)="calcularRuta()" class="myButton">Calcular Ruta</button>
+    </div>
     <br><br>
-    <div id="Result" ></div>
-    <div id="Soluc"></div>
-    <pre id="output"></pre>
-
-</div>
-
+    <div id="input">
+        <table id="tablaInput">
+            <tbody id="cuerpo">
+            </tbody>
+        </table>
+        <button *ngIf="generado && !iniciado" (click)="iniciar()" class="myButton">Iniciar</button>
+        <button *ngIf="generado && !iniciado" (click)="guardarTabla()"  class="myButton">Guardar Tabla</button>
+    </div>
+    <br><br><br>
+    
+    <div id="Rutas">
+        <table id="tablaRutas">
+            <tbody id="cuerpoRutas">
+            </tbody>
+        </table>
+    </div>
+    <br><br><br>
+    

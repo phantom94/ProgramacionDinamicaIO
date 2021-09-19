@@ -15,17 +15,17 @@
 }
 
 .font {
-    font-family: Georgia, serif;
+    font-family: 'Ubuntu', sans-serif;
     font-size: 20px;
-    letter-spacing: 2px;
-    word-spacing: 2px;
+    letter-spacing: 1px;
+    word-spacing: 1px;
     color: #000000;
     font-weight: 400;
     text-decoration: none;
     font-style: normal;
     font-variant: normal;
     text-transform: none;
-    }
+}
 
 
 .myButton {
@@ -51,4 +51,9 @@
 .myButton:active {
 	position:relative;
 	top:1px;
+}
+
+.mochila {
+    display: block;
+    margin-left: 20px;
 }

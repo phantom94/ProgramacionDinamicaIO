@@ -20,6 +20,7 @@ contenidoArchivo="";
 tabla:number[][]=[];
 listaCasa:boolean[]=[];
 
+//Inicia matriz de probabilidades
 public iniciar(n:number){
   for(var i=0;i<=n;i++){
     var fila=[]
@@ -30,6 +31,7 @@ public iniciar(n:number){
   }
 }
 
+//Genera los valores de probabilidad de la tabla de probabilidades
 public generar(){
   this.generado=true;
   this.cantidad= +(<HTMLInputElement>document.getElementById("juegosMax")).value;
@@ -84,6 +86,7 @@ public generar(){
 
 }
 
+//Limpia los valores para hacer otra prueba
 public reiniciar(){
   this.tabla=[];
   this.listaCasa=[];
@@ -92,6 +95,8 @@ public reiniciar(){
   document.getElementById("tablaRes").innerHTML="";
 }
 
+// Crea en la página la cantidad de checks iguales a los juegos
+// ingresados por el usuario
 public crearChecks(){
   var contenido="";
   var cantidad= +(<HTMLInputElement>document.getElementById("juegosMax")).value;
@@ -100,8 +105,9 @@ public crearChecks(){
   }
   document.getElementById("botones").innerHTML=contenido;
 }
+
 // Lee el archivo especificado por el usuario
-// para completar la tabla de entrada del usuario
+// para completar los valores de entrada del usuario
 public lectorArchivos(event:Event){
 			
   var file = (<HTMLInputElement>event.target).files[0];
@@ -116,6 +122,8 @@ public lectorArchivos(event:Event){
 
 }
 
+// Lee los valores del archivo cargado por la función lectorArchivos
+// y completa los inputs con esos valores
 public cargarArchivo(){
   var lineas = this.contenidoArchivo.split("\n");
   (<HTMLInputElement>document.getElementById("juegosMax")).value=lineas[0];
@@ -133,6 +141,7 @@ public cargarArchivo(){
   document.getElementById("botones").innerHTML=contenido;
 }
 
+// Genera un archivo con los valores ingresados por el usario para descargar como archivo txt
 public crearArchivo(){
   this.cantidad= +(<HTMLInputElement>document.getElementById("juegosMax")).value;
   this.ph=+(<HTMLInputElement>document.getElementById("Ph")).value;

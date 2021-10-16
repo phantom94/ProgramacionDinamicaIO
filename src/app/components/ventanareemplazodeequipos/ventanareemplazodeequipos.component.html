@@ -1,6 +1,38 @@
-<div class="center">
-    <a class="font">La ventana de reemplazo de equipos actualmente se encuentra en construccion</a>
+<a class="font">Ventana de reemplazo de equipos</a>
+<br>
+<script type ="text/javascript">
+
+    window.onload = function() {
+        what();
+        function what(){
+            document.getElementById('Result').innerHTML = 'hi';
+            document.getElementById('Soluc').innerHTML = 'hi';
+        };
+    }
+</script>
+
+<div>
+    {{inicio()}}
+    {{verificar()}}
+    <dl aling="center">
+        
+        <br>
+        <dt class="font"><a>Cargar Archivo:</a><input type="file" id="file-selector" (change)="cargar()" class="css-input"></dt>
+    </dl>
     <br>
+    <dl>
+        <li *ngFor="let objetos of listaObjetos">
+            {{objetos}}
+        </li>
+    </dl>
     <br>
-    <img src="assets/img/enconstruccion.png">
+    <button (click)="reemplazodeequipos()" class="myButton">Desarrollar</button>
+    <!-- <button (click)="buscarEnLista(3)" class="myButton">Desarrollar</button> -->
+    <button (click)="buscarvidautil()" class="myButton">Vida util Ganancias</button>
+    <button (click)="limpiar()" class="myButton">Limpiar</button>
+    <br><br>
+    <div id="Result" ></div>
+    <div id="Soluc"></div>
+    <pre id="output"></pre>
+
 </div>

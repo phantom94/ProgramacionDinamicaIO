@@ -1,9 +1,10 @@
 .css-input {
+    font-family: 'Ubuntu', sans-serif;
     padding: 5px;
-    font-size: 16px;
+    font-size: 20px;
     border-width: 1px;
-    border-color: #CCCCCC;
-    background-color: #FFFFFF;
+    border-color: transparent;
+    background-color: #f49334;
     color: #000000;
     border-style: solid;
     border-radius: 6px;
@@ -21,17 +22,17 @@
 }
 
 .font {
-    font-family: Georgia, serif;
+    font-family: 'Ubuntu', sans-serif;
     font-size: 20px;
-    letter-spacing: 2px;
-    word-spacing: 2px;
-    color: #fafafa;
-    font-weight: bold;
+    letter-spacing: 1px;
+    word-spacing: 1px;
+    color: #000000;
+    font-weight: 400;
     text-decoration: none;
     font-style: normal;
     font-variant: normal;
     text-transform: none;
-    }
+}
 
 
 .myButton {
@@ -43,8 +44,8 @@
 	display:inline-block;
 	cursor:pointer;
 	color:#fafafa;
-	font-family:Arial;
-	font-size:15px;
+	font-family: 'Ubuntu', sans-serif;
+	font-size:20px;
 	font-weight:bold;
 	padding:6px 24px;
     margin: 25px 12px 0px 12px;
@@ -66,8 +67,9 @@
 }
 
 .tagP {
-    color: #ffffff;
-    font-weight: bold;
+    font-family: 'Ubuntu', sans-serif;
+    color: #000000;
+    font-size: 20px;
 }
 
 table {
@@ -80,4 +82,9 @@ td {
 
 .rutasLabel {
     font-weight: bolder;font-size: larger;color: #fafafa;
+}
+
+.ruta {
+    display: block;
+    margin-left: 20px;
 }

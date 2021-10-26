@@ -93,6 +93,7 @@ public reiniciar(){
   this.generado=false;
   this.contenidoArchivo="";
   document.getElementById("tablaRes").innerHTML="";
+  (<HTMLInputElement>document.getElementById("file-selector")).value='';
 }
 
 // Crea en la página la cantidad de checks iguales a los juegos

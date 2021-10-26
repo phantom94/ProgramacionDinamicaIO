@@ -39,6 +39,8 @@ listaComparacion=[];
 resultadoComparacion=0;
 tempparasaberlista=0;
 largoresultados=0;
+listaOptimo=[];
+listaProximos=[];
 //
 
 public mochila() {
@@ -240,11 +242,13 @@ public reemplazodeequipos(){
     var e3 = "";
     e += "<h1> Solucion </h1>";
     e += "</li> G("+ this.plazoproyecto+ ") = 0</li><h1></h1>";
-    
+    this.listaProximos.push([""]);
+
   if(this.listavidautil.length!=0){
     var temp=0;
     var plazo=parseInt(this.plazoproyecto.toString());
     var vidatemp = 3;
+    var CantidadParaTabla=0;
     for(var y=0;y<plazo;y++){
       this.plazoproyecto=parseInt(this.plazoproyecto.toString())-1;
       this.largoresultados= this.resultadosGanteriores.length;
@@ -253,6 +257,10 @@ public reemplazodeequipos(){
         e += "</li> G("+ this.plazoproyecto+ ") = "+temp+ " + "+ 0 + " = "+temp+"</li><h1></h1>";
         this.resultadosGanteriores.push(parseInt("0"));
         this.resultadosGanteriores.push(parseInt(temp.toString()));
+        CantidadParaTabla=this.plazoproyecto;
+        this.listaOptimo.push(0);
+        this.listaOptimo.push(parseInt(temp.toString()));
+        this.listaProximos.push([(parseInt(this.plazoproyecto.toString())+1).toString(),temp.toString() ]);
       }
       if(y!=0){
         e += "</li> G("+ this.plazoproyecto+") = Minimo Entre: </li><h1></h1>";
@@ -264,8 +272,9 @@ public reemplazodeequipos(){
           PlazoProyectoTemp= PlazoProyectoTemp+1;
           temp=parseInt(this.resultadoBusqueda.toString())+ parseInt(this.resultadoG.toString());
           this.listaComparacion.push(parseInt(temp.toString()));
-
+          this.listaProximos.push([PlazoProyectoTemp.toString(), temp.toString()]);
           e += "</li> &nbsp;&nbsp;&nbsp;&nbsp; G("+ PlazoProyectoTemp+ ") = "+ this.resultadoBusqueda.toString() + " + "+ this.resultadoG + " = "+ temp+"</li><h1></h1>"
+         
         }
         
         this.tempparasaberlista=0;
@@ -273,6 +282,7 @@ public reemplazodeequipos(){
       e += "</li> &nbsp;&nbsp;&nbsp; El Minimo de la ecuacion es: " +this.resultadoComparacion + "</li><h1></h1>"
       this.listaComparacion=[];
       this.resultadosGanteriores.push(parseInt(this.resultadoComparacion.toString()));
+      this.listaOptimo.push(this.resultadoComparacion);
 
       if(vidatemp!=this.vidautilequipo+1){
           vidatemp++;
@@ -281,10 +291,52 @@ public reemplazodeequipos(){
       }
        
   }
-   e+= "</li>&nbsp;&nbsp;&nbsp;&nbsp;</li><h1></h1>"
+   //e+= "</li>&nbsp;&nbsp;&nbsp;&nbsp;</li><h1></h1>"
+   e+= "</li>&nbsp;&nbsp;</li>"
+   this.listaProximos.reverse();
+   this.listaOptimo.reverse();
+   console.log(this.listaProximos);
+   console.log(this.listaOptimo);
+    e+=this.crearTablaPlanOptimo(CantidadParaTabla);
    document.getElementById("Soluc").innerHTML = e;
  }  
 }
+
+public elegirCaminoProximo(){
+ var listaRes =[];
+ var listaTemp =[];
+ var largoOptimo= this.listaOptimo.length;
+ var largoProximos = this.listaProximos.length;
+ for(var i=0; i<largoOptimo; i++){
+    
+    for(var x=0; x<largoProximos; x++){
+      if(this.listaProximos[x][1]==this.listaOptimo[i]){
+        listaTemp.push(this.listaProximos[x][0]);
+      }
+    }
+    listaRes.push(listaTemp.reverse());
+    listaTemp=[];
+ }
+  return listaRes;
+}
+
+public crearTablaPlanOptimo(Tamano){
+
+    var listaproximos=this.elegirCaminoProximo();
+    console.log(listaproximos);
+    var e = "<table border='1' style='width:50%'>";  
+    e += "<th bgcolor='blue'> t </th>" + "<th bgcolor='blue'> G(t) </th>" +"<th bgcolor='blue'> Proximo </th>" + "<tr>";
+    
+    for (var i=0; i<Tamano+2; i++){
+
+      e += "<th bgcolor='gray'> " + i + "</th>";
+      e += "<th bgcolor='gray'> " + this.listaOptimo[i] + "</th>";
+      e += "<th bgcolor='gray'> " + listaproximos[i] + "</th>";
+      e += "<tr>";
+    }
+    return e;
+}
+
 
 public comparacionNumeros(lista){
   this.resultadoComparacion=parseInt(Math.min.apply(null, lista));
@@ -366,6 +418,8 @@ public limpiar(){
   this.resultadoBusqueda=0;
   this.tempparasaberlista=0;
   this.largoresultados=0;
+  this.listaOptimo=[];
+  this.listaProximos=[];
   document.getElementById("Result").innerHTML = "";
   document.getElementById("Soluc").innerHTML = "";
   (document.getElementById('file-selector')as HTMLInputElement).value = "";
@@ -396,6 +450,8 @@ public limpiar2(){
   this.resultadoBusqueda=0;
   this.tempparasaberlista=0;
   this.largoresultados=0;
+  this.listaOptimo=[];
+  this.listaProximos=[];
 }
 
 

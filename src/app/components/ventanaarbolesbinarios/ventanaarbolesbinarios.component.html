@@ -6,17 +6,34 @@
             <a class="font">Ventana Arboles binarios</a>
         </div>
         <div style="flex-grow: 1;">
-            <!-- <a class="font">Cargar Archivo:  </a><input type="file" id="file-selector" class="css-input" (change)="lectorArchivos($event)" accept=".txt"> -->
+            <a class="font">Cargar Archivo:  </a><input type="file" id="file-selector" class="css-input" (change)="lectorArchivos($event)" accept=".txt">
         </div>
     </div>
     <br><br><br>
-    <div>
+    <div *ngIf="!generado">
         <a class="tagP">Nombre de llaves:  </a><input type="text" id="nombreLlaves"><a class="tagP">  (Ejemplo: "Alfa,Beta,Omega...")</a>
         <br><br>
         <a class="tagP">Peso de llaves:  </a><input type="text" id="pesoLlaves"><a class="tagP">  (Ejemplo: "0.25,0.63,0.89...")</a>
-        <br><br>
+        <br><br><br><br>
+        <button type="button" (click)="crearListaLlaves()" class="myButton">Generar</button>
+        <button type="button" (click)="cargarArchivo()"  class="myButton">Abrir archivo</button>
+        <button type="button" (click)="crearArchivo()"  class="myButton">Crear archivo</button>
+    </div>
+    <div>
+        <table style="width:100%">
+            <tbody id="TablaA">
+            </tbody>
+        </table>
     </div>
     <br><br><br><br>
-    <button type="button" (click)="crearListaLlavez()" class="myButton">Generar</button>
+    <div>
+        <table style="width:100%">
+            <tbody id="TablaR">
+            </tbody>
+        </table>
+    </div>
+    <br><br><br>
+    <button *ngIf="generado" type="button" (click)="reiniciar()" class="myButton">Reiniciar</button>
+    
 
 </div>

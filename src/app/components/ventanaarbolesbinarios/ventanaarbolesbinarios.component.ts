@@ -13,22 +13,23 @@ export class VentanaarbolesbinariosComponent implements OnInit {
   }
 
 
-  iniciado=false;
+  generado=false;
+  contenidoArchivo="";
   listaLlaves:[string,number][] = [];
   listaPesos: number[]=[];
   tablaA: number[][]=[];
   tablaR: string[][]=[];
-  suma: number;
+  suma: number=0;
 
-  public crearListaLlavez(){
+  public crearListaLlaves(){
+    this.generado=true;
     var nombreLlaves: string[] = (<HTMLInputElement>document.getElementById("nombreLlaves")).value.trim().split(",");
     var pesoLlavesString: string[] = (<HTMLInputElement>document.getElementById("pesoLlaves")).value.trim().split(",");
     pesoLlavesString.forEach((x)=>{this.listaPesos.push(+x)});
     this.listaPesos.forEach((x)=>{this.suma+=x});
     if ( nombreLlaves.length === pesoLlavesString.length){
       for (let i = 0; i < nombreLlaves.length; i++) {
-       // this.listaLlaves.push([nombreLlaves[i],this.listaPesos[i]/this.suma]);
-       this.listaLlaves.push([nombreLlaves[i],this.listaPesos[i]]);
+       this.listaLlaves.push([nombreLlaves[i],this.listaPesos[i]/this.suma]);
 
       }
       this.listaLlaves.sort((a,b)=>{ return (a[0].localeCompare(b[0]))});
@@ -56,45 +57,68 @@ export class VentanaarbolesbinariosComponent implements OnInit {
       }
     }
 
-    //console.log(this.listaLlaves);
     for(let i=1; i<=this.listaLlaves.length+1;i++){
       var i2=0;
       for(let j = i+1; j<=this.listaLlaves.length;j++){
-        console.log(i,i2,j);
         var probAso=this.probAsoc(i2,j-1);
-        //console.log(probAso);
         var ki=this.getK(i2+1,j);
-        console.log(`ki: ${ki}`);
         var kval:[number,number][]=[];
         for(let w=0;w<ki.length;w++){
           kval.push([w,Math.round(((this.tablaA[i2][ki[w]-1]+this.tablaA[ki[w]][j]+probAso)+Number.EPSILON)*10000)/10000]);
         }
-        console.log(kval);
         var minimo = this.minK(kval);
-        console.log(`minimo: ${minimo}`);
         this.tablaA[i2][j]=minimo[1];
-        //console.log(ki[minimo[0]]);
         this.tablaR[i2][j]=this.listaLlaves[ki[minimo[0]]-1][0];
         i2++;
       }
     }
 
-    /* for(let i=1;i<=this.listaLlaves.length+1;i++){
-      for(let j=i+1;j<=this.listaLlaves.length;j++){
-        console.log(i,j);
-        var probAso=this.probAsoc(i-1,j-1);
-        var ki:number = this.tablaA[i-1][i-1]+this.tablaA[i+1][j]+probAso;
-        var kj:number = this.tablaA[i-1][j-1]+this.tablaA[j+1][j]+probAso;
-        var minimo=this.minK([[i-1,ki],[j,kj]]);
-        this.tablaA[i][j]=minimo[1];
-        this.tablaR[i][j]=this.listaLlaves[minimo[0]][0];
-        
-      }
-    } */
-    
-    console.log(this.tablaA);
-    console.log(this.tablaR);
+    this.dibujarTablas();
 
+
+  }
+
+  private dibujarTablas(){
+    var contenidoA:string="";
+    var contenidoR:string="";
+    contenidoA=`<tr><th> A </th><th> - </th>`;
+    for (let i = 0; i <this.listaLlaves.length; i++) {
+      contenidoA+= `<th>${this.listaLlaves[i][0]}</th>`;
+    }
+    contenidoA+=`</tr>`;
+
+    for (let i = 0; i <=this.listaLlaves.length; i++) {
+      if (i<this.listaLlaves.length){
+        contenidoA+=`<tr><th>${this.listaLlaves[i][0]}</th>`;
+      }else{
+        contenidoA+=`<tr><th> - </th>`;
+      }
+      for (let j = 0; j <=this.listaLlaves.length; j++) {
+        contenidoA+=`<td>${this.tablaA[i][j]}</td>`;
+      }
+      contenidoA+=`</tr>`;
+    }
+
+    contenidoR=`<tr><th> R </th><th> - </th>`;
+    for (let i = 0; i <this.listaLlaves.length; i++) {
+      contenidoR+= `<th>${this.listaLlaves[i][0]}</th>`;
+    }
+    contenidoR+=`</tr>`;
+
+    for (let i = 0; i <=this.listaLlaves.length; i++) {
+      if (i<this.listaLlaves.length){
+        contenidoR+=`<tr><th>${this.listaLlaves[i][0]}</th>`;
+      }else{
+        contenidoR+=`<tr><th> - </th>`;
+      }
+      for (let j = 0; j <=this.listaLlaves.length; j++) {
+        contenidoR+=`<td>${this.tablaR[i][j]}</td>`;
+      }
+      contenidoR+=`</tr>`;
+    }
+
+    document.getElementById("TablaA").innerHTML+= contenidoA;
+    document.getElementById("TablaR").innerHTML+= contenidoR;
 
   }
 
@@ -124,10 +148,53 @@ export class VentanaarbolesbinariosComponent implements OnInit {
     return l;
   }
 
-  public crearTablaR(){
+  public reiniciar(){
+    this.generado=false;
+    this.contenidoArchivo="";
+    this.listaLlaves=[];
+    this.listaPesos=[];
+    this.tablaA=[];
+    this.tablaR=[];
+    this.suma=0;
+    (<HTMLInputElement>document.getElementById("file-selector")).value='';
+    document.getElementById("TablaA").innerHTML= "";
+    document.getElementById("TablaR").innerHTML= "";
+  }
+
+  // Lee el archivo especificado por el usuario
+  // para completar la tabla de entrada del usuario
+  public lectorArchivos(event:Event){
+        
+    var file = (<HTMLInputElement>event.target).files[0];
+
+    var reader = new FileReader();
+
+    reader.onload= () => {
+      this.contenidoArchivo = reader.result as string;
+    }
+
+    reader.readAsText(file);
 
   }
 
+  public cargarArchivo(){
+    var linea:string[]= this.contenidoArchivo.split("\n");
+    (<HTMLInputElement>document.getElementById("nombreLlaves")).value=linea[0];
+    (<HTMLInputElement>document.getElementById("pesoLlaves")).value=linea[1];
+  }
+
+  public crearArchivo(){
+    var contenido = "";
+    contenido += (<HTMLInputElement>document.getElementById("nombreLlaves")).value;
+    contenido+="\n";
+    contenido += (<HTMLInputElement>document.getElementById("pesoLlaves")).value;
+
+    var elemento = document.createElement('a');
+    elemento.setAttribute('href',`data:text/plain;charset=utf-8,${contenido}`);
+    elemento.setAttribute('download', "Datos_arbol_binario");
+
+    elemento.dispatchEvent(new MouseEvent("click"));
+  }
 
 
 }

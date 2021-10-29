@@ -1,6 +1,22 @@
-<div class="center">
-    <a class="font">La ventana de arboles binarios actualmente se encuentra en construccion</a>
-    <br>
-    <br>
-    <img src="assets/img/enconstruccion.png">
+<br>
+
+<div class = "arboles">
+    <div style="display: flex;">
+        <div style="width: 50%; ; text-align: center;">
+            <a class="font">Ventana Arboles binarios</a>
+        </div>
+        <div style="flex-grow: 1;">
+            <!-- <a class="font">Cargar Archivo:  </a><input type="file" id="file-selector" class="css-input" (change)="lectorArchivos($event)" accept=".txt"> -->
+        </div>
+    </div>
+    <br><br><br>
+    <div>
+        <a class="tagP">Nombre de llaves:  </a><input type="text" id="nombreLlaves"><a class="tagP">  (Ejemplo: "Alfa,Beta,Omega...")</a>
+        <br><br>
+        <a class="tagP">Peso de llaves:  </a><input type="text" id="pesoLlaves"><a class="tagP">  (Ejemplo: "0.25,0.63,0.89...")</a>
+        <br><br>
+    </div>
+    <br><br><br><br>
+    <button type="button" (click)="crearListaLlavez()" class="myButton">Generar</button>
+
 </div>

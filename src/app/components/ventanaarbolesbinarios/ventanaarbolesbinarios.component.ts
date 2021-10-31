@@ -21,6 +21,8 @@ export class VentanaarbolesbinariosComponent implements OnInit {
   tablaR: string[][]=[];
   suma: number=0;
 
+  // Optiene los valores de la llaves y sus pesos del input
+  // del usuario.
   public crearListaLlaves(){
     this.generado=true;
     var nombreLlaves: string[] = (<HTMLInputElement>document.getElementById("nombreLlaves")).value.trim().split(",");
@@ -41,6 +43,7 @@ export class VentanaarbolesbinariosComponent implements OnInit {
     }
   }
 
+  // Se crea la tabla A y se rellena respectivamente la tabla R
   public crearTablaA(){
     //Se inicializa la tabla
     for(let i=0;i<=this.listaLlaves.length;i++){
@@ -78,6 +81,7 @@ export class VentanaarbolesbinariosComponent implements OnInit {
 
   }
 
+  // Se muestran las tablas en pantalla
   private dibujarTablas(){
     var contenidoA:string="";
     var contenidoR:string="";
@@ -122,6 +126,7 @@ export class VentanaarbolesbinariosComponent implements OnInit {
 
   }
 
+  // Se busca el minimo de los k
   private minK(listaValores:[number,number][]){
     var menor = listaValores[0];
     for(let i=1;i<listaValores.length;i++){
@@ -132,6 +137,7 @@ export class VentanaarbolesbinariosComponent implements OnInit {
     return menor;
   }
 
+  // Se obtiene la probabilidad asociada sumada de un rango de llaves
   private probAsoc(i:number,j:number){
     var sum=0;
     for(let x=i;x<=j;x++){
@@ -140,6 +146,7 @@ export class VentanaarbolesbinariosComponent implements OnInit {
     return sum;
   }
 
+  // Se obtienen todas las k entre dos llaves
   private getK(i,j){
     var l=[]
     for(let x=i;x<=j;x++){

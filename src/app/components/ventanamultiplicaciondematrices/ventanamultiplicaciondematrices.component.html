@@ -1,6 +1,43 @@
-<div class="center">
-    <a class="font">La ventana de multiplicacion de matrices actualmente se encuentra en construccion</a>
+<a class="font">Ventana de Multiplicacion de matrices</a>
+<br>
+<script type ="text/javascript">
+
+    window.onload = function() {
+        what();
+        function what(){
+            document.getElementById('Result').innerHTML = 'hi';
+            document.getElementById('Soluc').innerHTML = 'hi';
+        };
+    }
+</script>
+
+<div>
+    {{inicio()}}
+    {{verificar()}}
     <br>
+    <dl aling="center">
+        <dt class="font">Nombre Matriz: <input type="text" id="NombreMatriz" class="css-input"><br></dt>
+        <dt class="font">Dimension 1 de Matriz: <input type="number" id="DimensionUno" class="css-input" value="0"></dt>
+        <dt class="font">Dimension 2 de Matriz: <input type="number" id="DimensionDos" class="css-input" value="0"></dt>
+        <dt class="font"><button (click)="setValores()" class="myButton">Agregar Matriz</button></dt>
+        <br>
+        <dt class="font"><a>Crear Archivo:</a><button (click)="CrearArchivo()" class="myButton">Crear</button></dt>
+        <dt class="font"><a>Cargar Archivo:</a><input type="file" id="file-selector" (change)="cargar()" class="css-input"></dt>
+    </dl>
     <br>
-    <img src="assets/img/enconstruccion.png">
+    <dl>
+        <li *ngFor="let objetos of listaObjetos">
+            {{objetos}}
+        </li>
+    </dl>
+    <br>
+    <button (click)="construirMatriz()" class="myButton">Desarrollar</button>
+    <!-- <button (click)="buscarEnLista(3)" class="myButton">Desarrollar</button> -->
+   <!-- <button (click)="buscarvidautil()" class="myButton">Vida util Ganancias</button> -->
+    <button (click)="limpiar()" class="myButton">Limpiar</button> 
+    <br><br>
+    <div id="Result" ></div>
+    <div id="Soluc"></div>
+    <pre id="output"></pre>
+
 </div>
